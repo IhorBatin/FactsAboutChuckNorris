@@ -7,17 +7,20 @@ import com.example.chuckfacts.R
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity() {
-    private val viewModel: FactsViewModel by lazy {ViewModelProvider.NewInstanceFactory().create(FactsViewModel::class.java)}
+/** TODO GENERAL THINGS TO B DONE:
+ *  TODO: Convert all gradle to Kotlin build scripts
+ *  TODO: Implement Room Database for saving favorite facts
+ *  TODO: Design apps general layout & navigation
+ *
+  */
 
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
-
-        viewModel.getRandomFact()
     }
 
     override fun onStart() {

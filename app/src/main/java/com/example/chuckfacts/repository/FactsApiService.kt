@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object FactsApiService {
-    private val BASE_URL = "https://api.chucknorris.io/"
+    private const val BASE_URL: String = "https://api.chucknorris.io"
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
