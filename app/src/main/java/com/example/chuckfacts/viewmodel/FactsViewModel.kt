@@ -11,12 +11,24 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
+// TODO: Add handling onFailure and when when we get null objects, inform user
+
 class FactsViewModel : ViewModel() {
     private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi)
-
+    private val factsList: MutableList<ChuckFactResponse> = mutableListOf<ChuckFactResponse>()
     private val fact: MutableLiveData<ChuckFactResponse> = MutableLiveData<ChuckFactResponse>()
     private val categories: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-    private val factFromCategory: MutableLiveData<ChuckFactResponse> = MutableLiveData<ChuckFactResponse>()
+
+    private fun handleNewResponse(chuckFact: ChuckFactResponse){
+        Timber.i("ID: ${chuckFact.id}")
+        Timber.i("Fact: ${chuckFact.value}")
+        factsList.add(chuckFact)
+        fact.postValue(chuckFact)
+    }
+
+    fun getPreviousFact(index: Int){
+        fact.postValue(factsList[index])
+    }
 
     fun getRandomFact(){
         factsRepo.getRandomFacts().enqueue(object : Callback<ChuckFactResponse>{
@@ -34,12 +46,32 @@ class FactsViewModel : ViewModel() {
                     return
                 }
 
-                val chuckFact: ChuckFactResponse = response.body()!!
-                Timber.i("ID: ${chuckFact.id}")
-                Timber.i("Fact: ${chuckFact.value}")
-                fact.postValue(chuckFact)
+                handleNewResponse(response.body()!!)
             }
         })
+    }
+
+    fun getRandomFact(specificCategory: String){
+        factsRepo.getRandomFacts(specificCategory)
+            .enqueue(object : Callback<ChuckFactResponse>{
+                override fun onFailure(call: Call<ChuckFactResponse>, t: Throwable) {
+                    Timber.i("Fact fom Category onFailure: ${t.message}")
+                }
+
+                override fun onResponse(
+                    call: Call<ChuckFactResponse>,
+                    response: Response<ChuckFactResponse>
+                ) {
+                    Timber.i("Fact fom Category onResponse...")
+
+                    if(response.body() == null){
+                        Timber.i("Response is null")
+                        return
+                    }
+
+                    handleNewResponse(response.body()!!)
+                }
+            })
     }
 
     fun getAllCategories(){
@@ -72,34 +104,7 @@ class FactsViewModel : ViewModel() {
         })
     }
 
-    fun getRandomByCategory(specificCategory: String){
-        factsRepo.getRandomFromCategory(specificCategory)
-            .enqueue(object : Callback<ChuckFactResponse>{
-                override fun onFailure(call: Call<ChuckFactResponse>, t: Throwable) {
-                    Timber.i("Fact fom Category onFailure: ${t.message}")
-                }
-
-                override fun onResponse(
-                    call: Call<ChuckFactResponse>,
-                    response: Response<ChuckFactResponse>
-                ) {
-                    Timber.i("Fact fom Category onResponse...")
-
-                    if(response.body() == null){
-                        Timber.i("Response is null")
-                        return
-                    }
-
-                    val chuckFact: ChuckFactResponse = response.body()!!
-                    Timber.i("ID: ${chuckFact.id}")
-                    Timber.i("Fact from Category: ${chuckFact.value}")
-                    factFromCategory.postValue(chuckFact)
-                }
-            })
-    }
-
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories
-    fun getFromCategoryLiveData(): LiveData<ChuckFactResponse> = factFromCategory
 
 }

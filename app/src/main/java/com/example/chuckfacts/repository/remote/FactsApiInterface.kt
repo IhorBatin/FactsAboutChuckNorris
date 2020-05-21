@@ -5,19 +5,21 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface FactsApiInterface {
+private const val URL_RANDOM =  "/jokes/random"
+private const val URL_CATEGORIES =  "/jokes/categories"
 
+interface FactsApiInterface {
     /**
      * Requesting facts using Retrofit 2
      * using @GET to talk to the REST API
      */
 
-    @GET("/jokes/random")
+    @GET(URL_RANDOM)
     fun fetchRandomFacts(): Call<ChuckFactResponse>
 
-    @GET("/jokes/categories")
-    fun fetchAllCategories(): Call<List<String>>
+    @GET(URL_RANDOM)
+    fun fetchRandomFacts(@Query("category") category: String): Call<ChuckFactResponse>
 
-    @GET("/jokes/random")
-    fun fetchRandomFromCategory(@Query("category") category: String): Call<ChuckFactResponse>
+    @GET(URL_CATEGORIES)
+    fun fetchAllCategories(): Call<List<String>>
 }

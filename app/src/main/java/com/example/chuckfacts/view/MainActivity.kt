@@ -11,7 +11,8 @@ import timber.log.Timber
  *  TODO: Convert all gradle to Kotlin build scripts
  *  TODO: Implement Room Database for saving favorite facts
  *  TODO: Design apps general layout & navigation
- *
+ *  TODO: Have Dark/ Light Themes
+ *  TODO: Write Unit & Instrumentation Tests
   */
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +20,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Hiding upper bar if present
+        this.supportActionBar?.hide()
+
         Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
     }

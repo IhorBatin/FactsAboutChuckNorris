@@ -1,5 +1,6 @@
 package com.example.chuckfacts.view
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.chuckfacts.R
 import com.example.chuckfacts.viewmodel.FactsViewModel
+import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
 import timber.log.Timber
 
 
 class FactsFragment: Fragment() {
+    private var factsCount: Int = -1
     private val viewModel: FactsViewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(FactsViewModel::class.java)
     }
@@ -29,17 +32,17 @@ class FactsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated")
 
-        setupObservers()
-        viewModel.getRandomFact()
-        viewModel.getAllCategories()
-        viewModel.getRandomByCategory("dev")
+        tv_fact.let {
+            it.text = resources.getText(R.string.no_facts)
 
-        iv_test.setOnClickListener {
-            Toast.makeText(activity, "CLICKED!!!", Toast.LENGTH_LONG).show()
-            viewModel.getRandomFact()
-            viewModel.getAllCategories()
-            viewModel.getRandomByCategory("dev")
         }
+
+        setupObservers()
+
+        button_forward.setOnClickListener { handleOnForwardClick(it) }
+        button_back.setOnClickListener { handleOnBackClick(it) }
+
+
     }
 
     private fun setupObservers(){
@@ -48,6 +51,8 @@ class FactsFragment: Fragment() {
         viewModel.getFactsLiveData().observe(viewLifecycleOwner, Observer {fact ->
             Timber.i("LiveData RandomFact updating...")
             Timber.i("Fact: ${fact.value}")
+
+            updateFactText(fact.value)
         })
 
         viewModel.getAllCategoriesLiveData().observe(viewLifecycleOwner, Observer {categories ->
@@ -55,9 +60,27 @@ class FactsFragment: Fragment() {
             Timber.i("Num of categories: ${categories.size}")
         })
 
-        viewModel.getFromCategoryLiveData().observe(viewLifecycleOwner, Observer {factFromCategory ->
-            Timber.i("LiveData Fact from Category updating...")
-            Timber.i("Fact from category: ${factFromCategory.value}")
-        })
+    }
+
+    //TODO: Put condition to check if its Random or from Category, then call appropriate function
+    private fun handleOnForwardClick(button: View){
+        Toast.makeText(activity, "Next", Toast.LENGTH_SHORT).show()
+        factsCount++
+
+        viewModel.getRandomFact()
+
+    }
+
+    private fun handleOnBackClick(button: View) {
+        Toast.makeText(activity, "Previous", Toast.LENGTH_SHORT).show()
+        if(factsCount != 0) {
+            factsCount--
+        }
+        viewModel.getPreviousFact(factsCount)
+
+    }
+
+    private fun updateFactText(fact: String){
+        tv_fact.text = fact
     }
 }
