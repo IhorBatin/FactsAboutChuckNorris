@@ -13,13 +13,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
         android:padding="10dp"
-        android:background="@color/gray"
+        android:background="@color/silver"
         android:minHeight="200dp"
         android:textStyle="bold"
         android:textSize="25sp"
+        tools:text="@string/no_facts"
         />
-
 
     <include
         layout="@layout/bottom_control_bar"
@@ -30,6 +31,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

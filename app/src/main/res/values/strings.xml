@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">ChuckFacts</string>
-    <string name="no_facts">No Facts Yet!</string>
+    <string name="no_facts">Loading Facts…</string>
 </resources>

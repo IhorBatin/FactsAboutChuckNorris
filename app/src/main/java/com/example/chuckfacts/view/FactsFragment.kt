@@ -1,6 +1,8 @@
 package com.example.chuckfacts.view
 
 
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,9 @@ import timber.log.Timber
 
 class FactsFragment: Fragment() {
     private var factsCount: Int = -1
+    private var currentFact: Int = -1
+    private var visibleFact: String = ""
+
     private val viewModel: FactsViewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(FactsViewModel::class.java)
     }
@@ -32,17 +37,18 @@ class FactsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated")
 
+        // Simulating forward click to load first item
+        handleOnForwardClick()
+
         tv_fact.let {
             it.text = resources.getText(R.string.no_facts)
-
         }
 
         setupObservers()
 
-        button_forward.setOnClickListener { handleOnForwardClick(it) }
-        button_back.setOnClickListener { handleOnBackClick(it) }
-
-
+        button_forward.setOnClickListener { handleOnForwardClick() }
+        button_back.setOnClickListener { handleOnBackClick() }
+        button_share.setOnClickListener { handleOnShareClick() }
     }
 
     private fun setupObservers(){
@@ -59,28 +65,44 @@ class FactsFragment: Fragment() {
             Timber.i("LiveData Categories updating...")
             Timber.i("Num of categories: ${categories.size}")
         })
-
     }
 
     //TODO: Put condition to check if its Random or from Category, then call appropriate function
-    private fun handleOnForwardClick(button: View){
+    private fun handleOnForwardClick(){
         Toast.makeText(activity, "Next", Toast.LENGTH_SHORT).show()
-        factsCount++
-
-        viewModel.getRandomFact()
-
+        if(factsCount > currentFact){
+            currentFact++
+            viewModel.getPreviousFact(currentFact)
+        }
+        else{
+            factsCount++
+            currentFact++
+            viewModel.getRandomFact()
+        }
     }
 
-    private fun handleOnBackClick(button: View) {
+    private fun handleOnBackClick() {
         Toast.makeText(activity, "Previous", Toast.LENGTH_SHORT).show()
-        if(factsCount != 0) {
-            factsCount--
+        if(currentFact != 0) {
+            currentFact--
+            viewModel.getPreviousFact(currentFact)
         }
-        viewModel.getPreviousFact(factsCount)
+    }
 
+    private fun handleOnShareClick(){
+        Toast.makeText(activity, "Sharing", Toast.LENGTH_SHORT).show()
+        val sendIntent: Intent = Intent()
+        val shareIntent: Intent = Intent.createChooser(sendIntent, null)
+
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+            "$visibleFact \n Provided by Random Chuck Norris Facts App")
+        sendIntent.type = "text/plain"
+        startActivity(shareIntent)
     }
 
     private fun updateFactText(fact: String){
-        tv_fact.text = fact
+        visibleFact = fact
+        tv_fact.text = visibleFact
     }
 }
