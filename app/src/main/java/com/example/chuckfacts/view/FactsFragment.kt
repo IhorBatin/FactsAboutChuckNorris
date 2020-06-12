@@ -1,6 +1,7 @@
 package com.example.chuckfacts.view
 
 
+import android.app.Application
 import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.chuckfacts.R
 import com.example.chuckfacts.viewmodel.FactsViewModel
@@ -18,14 +20,12 @@ import kotlinx.android.synthetic.main.fragment_fact.*
 import timber.log.Timber
 
 
-class FactsFragment: Fragment() {
+class FactsFragment : Fragment() {
     private var factsCount: Int = -1
     private var currentFact: Int = -1
     private var visibleFact: String = ""
 
-    private val viewModel: FactsViewModel by lazy {
-        ViewModelProvider.NewInstanceFactory().create(FactsViewModel::class.java)
-    }
+    private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,10 +45,12 @@ class FactsFragment: Fragment() {
         }
 
         setupObservers()
+        viewModel.getAllSavedFacts()
 
         button_forward.setOnClickListener { handleOnForwardClick() }
         button_back.setOnClickListener { handleOnBackClick() }
         button_share.setOnClickListener { handleOnShareClick() }
+        button_save.setOnClickListener { handleOnSaveClick() }
     }
 
     private fun setupObservers(){
@@ -65,6 +67,12 @@ class FactsFragment: Fragment() {
             Timber.i("LiveData Categories updating...")
             Timber.i("Num of categories: ${categories.size}")
         })
+
+        viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {
+
+        })
+
+
     }
 
     //TODO: Put condition to check if its Random or from Category, then call appropriate function
@@ -99,6 +107,11 @@ class FactsFragment: Fragment() {
             "$visibleFact \n Provided by Random Chuck Norris Facts App")
         sendIntent.type = "text/plain"
         startActivity(shareIntent)
+    }
+
+    // TODO: Implement saving to DB functionality
+    private fun handleOnSaveClick(){
+        Toast.makeText(activity, "Saving", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateFactText(fact: String){

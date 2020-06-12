@@ -1,23 +1,34 @@
 package com.example.chuckfacts.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.chuckfacts.repository.FactsApiService
 import com.example.chuckfacts.repository.FactsRepo
 import com.example.chuckfacts.util.ChuckFactResponse
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
 // TODO: Add handling onFailure and when when we get null objects, inform user
+// Can create error chuck obj, and pass it through live data ?
 
-class FactsViewModel : ViewModel() {
-    private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi)
+class FactsViewModel(application: Application) : AndroidViewModel(application) {
+    private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi, application)
     private val factsList: MutableList<ChuckFactResponse> = mutableListOf<ChuckFactResponse>()
+
     private val fact: MutableLiveData<ChuckFactResponse> = MutableLiveData<ChuckFactResponse>()
     private val categories: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
+    private val savedFacts: MutableLiveData<List<ChuckFactResponse>> = MutableLiveData<List<ChuckFactResponse>>()
+
+    init {
+
+    }
 
     private fun handleNewResponse(chuckFact: ChuckFactResponse){
         Timber.i("ID: ${chuckFact.id}")
@@ -104,7 +115,37 @@ class FactsViewModel : ViewModel() {
         })
     }
 
+    fun getAllSavedFacts(){
+        viewModelScope.launch {
+            factsRepo.getAllSavedFacts()?.collect {
+                Timber.i("# of facts returned from DB:  ${(it.size)}")
+                savedFacts.postValue(it)
+            }
+        }
+
+        /*factsRepo.getAllSavedFacts()?.enqueue(object : Callback<List<ChuckFactResponse>>{
+            override fun onFailure(call: Call<List<ChuckFactResponse>>, t: Throwable) {
+                Timber.i("Failed getting facts from local DB")
+            }
+
+            override fun onResponse(
+                call: Call<List<ChuckFactResponse>>,
+                response: Response<List<ChuckFactResponse>>
+            ) {
+                if(response.body() == null){
+                    Timber.i("DB response is null")
+                    return
+                }
+
+                val chuckFacts: List<ChuckFactResponse>? = response.body()
+                Timber.i("Facts returned from DB:  ${(chuckFacts?.size ?: 0)}")
+                savedFacts.postValue(chuckFacts)
+            }
+        })*/
+    }
+
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories
+    fun getAllSavedFactsLiveData(): LiveData<List<ChuckFactResponse>> = savedFacts
 
 }

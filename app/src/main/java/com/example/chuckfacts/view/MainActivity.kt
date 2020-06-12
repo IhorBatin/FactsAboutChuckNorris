@@ -2,8 +2,9 @@ package com.example.chuckfacts.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import com.example.chuckfacts.R
+import com.example.chuckfacts.repository.local.FactsDb
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import timber.log.Timber
 
@@ -11,11 +12,17 @@ import timber.log.Timber
  *  TODO: Convert all gradle to Kotlin build scripts
  *  TODO: Implement Room Database for saving favorite facts
  *  TODO: Design apps general layout & navigation
- *  TODO: Have Dark/ Light Themes
+ *  TODO: Have Dark/ Light Themes?
  *  TODO: Write Unit & Instrumentation Tests
-  */
+*/
 
 class MainActivity : AppCompatActivity() {
+
+    val viewModel by viewModels<FactsViewModel>()
+
+    init {
+        Timber.i("Initialized")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
