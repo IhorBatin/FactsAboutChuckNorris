@@ -10,10 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.chuckfacts.R
+import com.example.chuckfacts.R.id.mi_about
+import com.example.chuckfacts.R.id.mi_saved_facts
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
+import kotlinx.coroutines.newFixedThreadPoolContext
 import timber.log.Timber
 
 class FactsFragment : Fragment() {
@@ -27,6 +31,7 @@ class FactsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.i("onCreateView")
+        requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
         return inflater.inflate(R.layout.fragment_fact, container, false)
     }
 
@@ -34,10 +39,10 @@ class FactsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated")
 
-        // Calling forward click to load first item
+        setHasOptionsMenu(true)
+
+        // Loading first fact on launch
         handleOnForwardClick()
-
-
 
         tv_fact.let {
             it.text = resources.getText(R.string.no_facts)
@@ -53,6 +58,27 @@ class FactsFragment : Fragment() {
         button_save.setOnClickListener { handleOnSaveClick() }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.removeItem(R.id.mi_random_facts)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            mi_saved_facts -> {
+                navigateToSavedFacts()
+                true
+            }
+            mi_about -> {
+                // TODO: Add about info fragment or something similar,with link to OG API
+                Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
 
     private fun setupObservers(){
         // When checking updates on live data make sure app is in the foreground,
@@ -73,12 +99,11 @@ class FactsFragment : Fragment() {
             Timber.i("# of facts returned from DB:  ${(it.size)}")
         })
 
-
     }
 
     //TODO: Put condition to check if its Random or from Category, then call appropriate function
     private fun handleOnForwardClick(){
-        Toast.makeText(activity, "Next", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity, "Next", Toast.LENGTH_SHORT).show()
         if(factsCount > currentFact){
             currentFact++
             viewModel.getPreviousFact(currentFact)
@@ -91,7 +116,7 @@ class FactsFragment : Fragment() {
     }
 
     private fun handleOnBackClick() {
-        Toast.makeText(activity, "Previous", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity, "Previous", Toast.LENGTH_SHORT).show()
         if(currentFact != 0) {
             currentFact--
             viewModel.getPreviousFact(currentFact)
@@ -99,7 +124,6 @@ class FactsFragment : Fragment() {
     }
 
     private fun handleOnShareClick(){
-        Toast.makeText(activity, "Sharing", Toast.LENGTH_SHORT).show()
         val sendIntent: Intent = Intent()
         val shareIntent: Intent = Intent.createChooser(sendIntent, null)
 
@@ -112,18 +136,23 @@ class FactsFragment : Fragment() {
 
     // TODO: Implement saving to DB functionality
     private fun handleOnSaveClick(){
-        Toast.makeText(activity, "Saving", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
         if(currentFact != -1){
             viewModel.saveFact(currentFact)
         }
         else{
             Toast.makeText(activity, "No Facts to save to DB", Toast.LENGTH_SHORT).show()
         }
+        // Testing only
         viewModel.getAllSavedFacts()
     }
 
     private fun updateFactText(fact: String){
         visibleFact = fact
         tv_fact.text = visibleFact
+    }
+
+    private fun navigateToSavedFacts(){
+        view?.findNavController()?.navigate(R.id.action_factsFragment_to_savedFactsFragment)
     }
 }

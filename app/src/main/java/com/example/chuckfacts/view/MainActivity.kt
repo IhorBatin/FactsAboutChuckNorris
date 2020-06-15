@@ -2,7 +2,12 @@ package com.example.chuckfacts.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
 import com.example.chuckfacts.R
 import com.example.chuckfacts.repository.local.FactsDb
 import com.example.chuckfacts.viewmodel.FactsViewModel
@@ -29,9 +34,21 @@ class MainActivity : AppCompatActivity() {
         // Hiding upper bar if present
         //this.supportActionBar?.hide()
 
+        val toolbar: Toolbar = findViewById(R.id.tb_top_toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+
+
         Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
 
     override fun onStart() {
         super.onStart()

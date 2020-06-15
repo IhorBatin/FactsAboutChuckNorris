@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/mi_saved_facts"
-        android:title="@string/string_saved_facts" />
+        android:title="@string/string_saved_facts"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/mi_random_facts"
+        android:title="@string/string_random"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/mi_about"
+        android:icon="@drawable/ic_info"
+        app:showAsAction="always"
         android:title="@string/string_about"/>
 
 

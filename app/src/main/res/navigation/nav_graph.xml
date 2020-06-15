@@ -14,5 +14,9 @@
     <fragment
         android:id="@+id/savedFactsFragment"
         android:name="com.example.chuckfacts.view.SavedFactsFragment"
-        android:label="SavedFactsFragment" />
+        android:label="SavedFactsFragment" >
+        <action
+            android:id="@+id/action_savedFactsFragment_to_factsFragment"
+            app:destination="@id/factsFragment" />
+    </fragment>
 </navigation>
