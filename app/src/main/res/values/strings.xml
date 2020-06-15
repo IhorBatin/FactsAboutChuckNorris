@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">ChuckFacts</string>
     <string name="no_facts">Loading Facts…</string>
+    <string name="string_saved_facts">Saved Facts</string>
+    <string name="string_about">About</string>
 </resources>

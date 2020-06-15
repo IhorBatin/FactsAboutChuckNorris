@@ -14,22 +14,20 @@ import timber.log.Timber
  *  TODO: Design apps general layout & navigation
  *  TODO: Have Dark/ Light Themes?
  *  TODO: Write Unit & Instrumentation Tests
+ *
+ *  TODO: Add info menu item to tell about app and API it uses
 */
 
 class MainActivity : AppCompatActivity() {
 
     val viewModel by viewModels<FactsViewModel>()
 
-    init {
-        Timber.i("Initialized")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Hiding upper bar if present
-        this.supportActionBar?.hide()
+        //this.supportActionBar?.hide()
 
         Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")

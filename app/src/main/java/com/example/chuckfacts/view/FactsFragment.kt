@@ -1,13 +1,10 @@
 package com.example.chuckfacts.view
 
-
 import android.app.Application
 import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,11 +16,11 @@ import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
 import timber.log.Timber
 
-
 class FactsFragment : Fragment() {
     private var factsCount: Int = -1
     private var currentFact: Int = -1
     private var visibleFact: String = ""
+
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
 
@@ -37,8 +34,10 @@ class FactsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.i("onViewCreated")
 
-        // Simulating forward click to load first item
+        // Calling forward click to load first item
         handleOnForwardClick()
+
+
 
         tv_fact.let {
             it.text = resources.getText(R.string.no_facts)
@@ -47,11 +46,13 @@ class FactsFragment : Fragment() {
         setupObservers()
         viewModel.getAllSavedFacts()
 
+
         button_forward.setOnClickListener { handleOnForwardClick() }
         button_back.setOnClickListener { handleOnBackClick() }
         button_share.setOnClickListener { handleOnShareClick() }
         button_save.setOnClickListener { handleOnSaveClick() }
     }
+
 
     private fun setupObservers(){
         // When checking updates on live data make sure app is in the foreground,
@@ -69,7 +70,7 @@ class FactsFragment : Fragment() {
         })
 
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {
-
+            Timber.i("# of facts returned from DB:  ${(it.size)}")
         })
 
 
@@ -112,6 +113,13 @@ class FactsFragment : Fragment() {
     // TODO: Implement saving to DB functionality
     private fun handleOnSaveClick(){
         Toast.makeText(activity, "Saving", Toast.LENGTH_SHORT).show()
+        if(currentFact != -1){
+            viewModel.saveFact(currentFact)
+        }
+        else{
+            Toast.makeText(activity, "No Facts to save to DB", Toast.LENGTH_SHORT).show()
+        }
+        viewModel.getAllSavedFacts()
     }
 
     private fun updateFactText(fact: String){

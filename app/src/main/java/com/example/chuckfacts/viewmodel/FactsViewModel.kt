@@ -118,31 +118,12 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllSavedFacts(){
         viewModelScope.launch {
             factsRepo.getAllSavedFacts()?.collect {
-                Timber.i("# of facts returned from DB:  ${(it.size)}")
                 savedFacts.postValue(it)
             }
         }
-
-        /*factsRepo.getAllSavedFacts()?.enqueue(object : Callback<List<ChuckFactResponse>>{
-            override fun onFailure(call: Call<List<ChuckFactResponse>>, t: Throwable) {
-                Timber.i("Failed getting facts from local DB")
-            }
-
-            override fun onResponse(
-                call: Call<List<ChuckFactResponse>>,
-                response: Response<List<ChuckFactResponse>>
-            ) {
-                if(response.body() == null){
-                    Timber.i("DB response is null")
-                    return
-                }
-
-                val chuckFacts: List<ChuckFactResponse>? = response.body()
-                Timber.i("Facts returned from DB:  ${(chuckFacts?.size ?: 0)}")
-                savedFacts.postValue(chuckFacts)
-            }
-        })*/
     }
+
+    fun saveFact(index: Int) = factsRepo.saveFactToDb(factsList[index])
 
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories
