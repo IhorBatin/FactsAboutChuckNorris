@@ -1,5 +1,6 @@
 package com.example.chuckfacts.view
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -26,6 +27,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     val viewModel by viewModels<FactsViewModel>()
+    val permissions: List<String> = arrayListOf("android.permission.INTERNET")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

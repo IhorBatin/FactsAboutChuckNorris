@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
+import com.example.chuckfacts.util.ChuckFactResponse
 import timber.log.Timber
 
 // TODO: Implement RecyclerView to show saved facts
@@ -16,6 +17,7 @@ import timber.log.Timber
 class SavedFactsFragment : Fragment() {
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
+    private var allFactsFromDB: List<ChuckFactResponse> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -30,7 +32,6 @@ class SavedFactsFragment : Fragment() {
 
         setHasOptionsMenu(true)
         setupObservers()
-
         viewModel.getAllSavedFacts()
     }
 
@@ -59,7 +60,8 @@ class SavedFactsFragment : Fragment() {
 
     private fun setupObservers(){
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
-            Timber.i("Facts List: ${factsList.size}")
+            Timber.i("Saved Facts in DB: ${factsList.size}")
+            allFactsFromDB = factsList
         })
     }
 

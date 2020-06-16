@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
-import com.example.chuckfacts.R.id.mi_about
-import com.example.chuckfacts.R.id.mi_saved_facts
+import com.example.chuckfacts.R.id.*
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
@@ -24,9 +24,11 @@ class FactsFragment : Fragment() {
     private var factsCount: Int = -1
     private var currentFact: Int = -1
     private var visibleFact: String = ""
-
+    private var currentCategory: String = "random"
+    private var listOfCategories: List<String> = listOf()
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,6 +43,7 @@ class FactsFragment : Fragment() {
 
         setHasOptionsMenu(true)
         setupObservers()
+        viewModel.getAllCategories()
 
         // Loading first fact on launch
         handleOnForwardClick()
@@ -49,17 +52,24 @@ class FactsFragment : Fragment() {
             it.text = resources.getText(R.string.no_facts)
         }
 
-        viewModel.getAllSavedFacts()
-
         button_forward.setOnClickListener { handleOnForwardClick() }
         button_back.setOnClickListener { handleOnBackClick() }
         button_share.setOnClickListener { handleOnShareClick() }
         button_save.setOnClickListener { handleOnSaveClick() }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.removeItem(R.id.mi_random_facts)
+        menu.removeItem(mi_random_facts)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        // Populating category sub-menu with categories
+        for (i in listOfCategories){
+            menu[0].subMenu.add(i.toUpperCase())
+        }
+        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -73,7 +83,16 @@ class FactsFragment : Fragment() {
                 Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
                 true
             }
+            mi_category -> {
+                //
+                true
+            }
             else -> {
+                currentCategory = item.toString().toLowerCase()
+                handleOnForwardClick()
+                Toast.makeText(activity,
+                    "Selected Category: ${currentCategory.toUpperCase()}",
+                    Toast.LENGTH_SHORT).show()
                 super.onOptionsItemSelected(item)
             }
         }
@@ -84,25 +103,28 @@ class FactsFragment : Fragment() {
         // otherwise it will no update values
         viewModel.getFactsLiveData().observe(viewLifecycleOwner, Observer {fact ->
             Timber.i("LiveData RandomFact updating...")
+            Timber.i("Fact Category: ${fact.categories}")
+            Timber.i("Fact ID: ${fact.id}")
             Timber.i("Fact: ${fact.value}")
-
+            Timber.i("=======================")
             updateFactText(fact.value)
         })
 
         viewModel.getAllCategoriesLiveData().observe(viewLifecycleOwner, Observer {categories ->
             Timber.i("LiveData Categories updating...")
             Timber.i("Num of categories: ${categories.size}")
+            listOfCategories = categories
+            activity?.invalidateOptionsMenu()
         })
 
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {
             Timber.i("# of facts returned from DB:  ${(it.size)}")
         })
-
     }
 
     //TODO: Put condition to check if its Random or from Category, then call appropriate function
     private fun handleOnForwardClick(){
-        //Toast.makeText(activity, "Next", Toast.LENGTH_SHORT).show()
+        Timber.i("Making Request on category: ${currentCategory}")
         if(factsCount > currentFact){
             currentFact++
             viewModel.getPreviousFact(currentFact)
@@ -110,12 +132,16 @@ class FactsFragment : Fragment() {
         else{
             factsCount++
             currentFact++
-            viewModel.getRandomFact()
+            if (currentCategory == "random"){
+                viewModel.getRandomFact()
+            }
+            else if( currentCategory != "random"){
+                viewModel.getRandomFact(currentCategory)
+            }
         }
     }
 
     private fun handleOnBackClick() {
-        //Toast.makeText(activity, "Previous", Toast.LENGTH_SHORT).show()
         if(currentFact != 0) {
             currentFact--
             viewModel.getPreviousFact(currentFact)
@@ -123,7 +149,7 @@ class FactsFragment : Fragment() {
     }
 
     private fun handleOnShareClick(){
-        val sendIntent: Intent = Intent()
+        val sendIntent = Intent()
         val shareIntent: Intent = Intent.createChooser(sendIntent, null)
 
         sendIntent.action = Intent.ACTION_SEND
@@ -142,8 +168,6 @@ class FactsFragment : Fragment() {
         else{
             Toast.makeText(activity, "No Facts to save to DB", Toast.LENGTH_SHORT).show()
         }
-        // Testing only
-        viewModel.getAllSavedFacts()
     }
 
     private fun updateFactText(fact: String){

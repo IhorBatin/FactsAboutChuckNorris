@@ -128,5 +128,4 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories
     fun getAllSavedFactsLiveData(): LiveData<List<ChuckFactResponse>> = savedFacts
-
 }

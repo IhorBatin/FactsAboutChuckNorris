@@ -5,8 +5,15 @@
     <item
         android:id="@+id/mi_category"
         android:title="@string/string_category"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/mi_cat_random"
+                android:title="@string/string_cat_random" />
+        </menu>
+    </item>
+
 
     <item
         android:id="@+id/mi_saved_facts"
