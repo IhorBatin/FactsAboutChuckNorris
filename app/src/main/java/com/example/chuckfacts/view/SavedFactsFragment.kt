@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
 import timber.log.Timber
 
 // TODO: Implement RecyclerView to show saved facts
 // TODO: Design fact view holder with share and delete buttons
-// TODO: In noo saved items display some default mesage
+// TODO: If no saved items, display some default message
 
 class SavedFactsFragment : Fragment() {
 
@@ -28,10 +29,14 @@ class SavedFactsFragment : Fragment() {
         Timber.i("onViewCreated")
 
         setHasOptionsMenu(true)
+        setupObservers()
+
+        viewModel.getAllSavedFacts()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.removeItem(R.id.mi_saved_facts)
+        menu.removeItem(R.id.mi_category)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -42,7 +47,7 @@ class SavedFactsFragment : Fragment() {
                 true
             }
             R.id.mi_about -> {
-                // TODO: Add about info fragment or something similar,with link to OG API
+                navigateToAbout()
                 Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
                 true
             }
@@ -52,8 +57,17 @@ class SavedFactsFragment : Fragment() {
         }
     }
 
+    private fun setupObservers(){
+        viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
+            Timber.i("Facts List: ${factsList.size}")
+        })
+    }
+
     private fun navigateToRandomFacts(){
         view?.findNavController()?.navigate(R.id.action_savedFactsFragment_to_factsFragment)
     }
 
+    private fun navigateToAbout(){
+        view?.findNavController()?.navigate(R.id.action_savedFactsFragment_to_aboutFragment)
+    }
 }

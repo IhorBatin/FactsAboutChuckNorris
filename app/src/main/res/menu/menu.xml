@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/mi_category"
+        android:title="@string/string_category"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/mi_saved_facts"
         android:title="@string/string_saved_facts"
         app:showAsAction="always"/>

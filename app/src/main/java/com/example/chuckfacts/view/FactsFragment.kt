@@ -1,8 +1,6 @@
 package com.example.chuckfacts.view
 
-import android.app.Application
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -19,6 +17,8 @@ import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
 import kotlinx.coroutines.newFixedThreadPoolContext
 import timber.log.Timber
+
+// TODO: Dropdown menu for selecting categories just below toolbar ?
 
 class FactsFragment : Fragment() {
     private var factsCount: Int = -1
@@ -40,6 +40,7 @@ class FactsFragment : Fragment() {
         Timber.i("onViewCreated")
 
         setHasOptionsMenu(true)
+        setupObservers()
 
         // Loading first fact on launch
         handleOnForwardClick()
@@ -48,9 +49,7 @@ class FactsFragment : Fragment() {
             it.text = resources.getText(R.string.no_facts)
         }
 
-        setupObservers()
         viewModel.getAllSavedFacts()
-
 
         button_forward.setOnClickListener { handleOnForwardClick() }
         button_back.setOnClickListener { handleOnBackClick() }
@@ -70,7 +69,7 @@ class FactsFragment : Fragment() {
                 true
             }
             mi_about -> {
-                // TODO: Add about info fragment or something similar,with link to OG API
+                navigateToAbout()
                 Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
                 true
             }
@@ -154,5 +153,9 @@ class FactsFragment : Fragment() {
 
     private fun navigateToSavedFacts(){
         view?.findNavController()?.navigate(R.id.action_factsFragment_to_savedFactsFragment)
+    }
+
+    private fun navigateToAbout(){
+        view?.findNavController()?.navigate(R.id.action_factsFragment_to_aboutFragment)
     }
 }

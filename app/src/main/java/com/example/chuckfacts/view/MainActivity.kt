@@ -31,13 +31,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Hiding upper bar if present
-        //this.supportActionBar?.hide()
-
         val toolbar: Toolbar = findViewById(R.id.tb_top_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(true)
-
 
         Timber.plant(Timber.DebugTree())
         Timber.i("onCreate called")
@@ -48,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         inflater.inflate(R.menu.menu, menu)
         return true
     }
-
 
     override fun onStart() {
         super.onStart()

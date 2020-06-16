@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/factsFragment">
 
     <fragment
@@ -10,6 +12,9 @@
         <action
             android:id="@+id/action_factsFragment_to_savedFactsFragment"
             app:destination="@id/savedFactsFragment" />
+        <action
+            android:id="@+id/action_factsFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/savedFactsFragment"
@@ -18,5 +23,20 @@
         <action
             android:id="@+id/action_savedFactsFragment_to_factsFragment"
             app:destination="@id/factsFragment" />
+        <action
+            android:id="@+id/action_savedFactsFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.chuckfacts.view.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_factsFragment"
+            app:destination="@id/factsFragment" />
+        <action
+            android:id="@+id/action_aboutFragment_to_savedFactsFragment"
+            app:destination="@id/savedFactsFragment" />
     </fragment>
 </navigation>
