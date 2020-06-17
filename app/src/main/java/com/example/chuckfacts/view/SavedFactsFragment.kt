@@ -6,8 +6,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chuckfacts.R
+import com.example.chuckfacts.adapter.FactsAdapter
 import com.example.chuckfacts.util.ChuckFactResponse
+import kotlinx.android.synthetic.main.fragment_saved_facts.*
 import timber.log.Timber
 
 // TODO: Implement RecyclerView to show saved facts
@@ -18,6 +21,7 @@ class SavedFactsFragment : Fragment() {
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
+    private val rvAdapter = FactsAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -33,6 +37,14 @@ class SavedFactsFragment : Fragment() {
         setHasOptionsMenu(true)
         setupObservers()
         viewModel.getAllSavedFacts()
+
+        // Setting up RecyclerView
+        rv_facts_list.adapter = rvAdapter
+        rv_facts_list.layoutManager = LinearLayoutManager(context)
+        rv_facts_list.setHasFixedSize(true)
+
+        Timber.i("RV: ${rvAdapter.itemCount}")
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -62,6 +74,8 @@ class SavedFactsFragment : Fragment() {
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
             Timber.i("Saved Facts in DB: ${factsList.size}")
             allFactsFromDB = factsList
+            rvAdapter.updateFactsList(allFactsFromDB)
+            Timber.i("List size ->: ${allFactsFromDB.size}")
         })
     }
 

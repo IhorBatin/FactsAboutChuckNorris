@@ -19,6 +19,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import timber.log.Timber
 
 // TODO: Dropdown menu for selecting categories just below toolbar ?
+// TODO: Fix - saving correct fact to the DB
 
 class FactsFragment : Fragment() {
     private var factsCount: Int = -1
@@ -65,7 +66,7 @@ class FactsFragment : Fragment() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        // Populating category sub-menu with categories
+        // Populating category sub-menu with categories received from API
         for (i in listOfCategories){
             menu[0].subMenu.add(i.toUpperCase())
         }
@@ -122,7 +123,6 @@ class FactsFragment : Fragment() {
         })
     }
 
-    //TODO: Put condition to check if its Random or from Category, then call appropriate function
     private fun handleOnForwardClick(){
         Timber.i("Making Request on category: ${currentCategory}")
         if(factsCount > currentFact){
@@ -162,6 +162,7 @@ class FactsFragment : Fragment() {
     // TODO: Implement saving to DB functionality
     private fun handleOnSaveClick(){
         Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
+        Timber.i("Saving -> ${currentFact}")
         if(currentFact != -1){
             viewModel.saveFact(currentFact)
         }
