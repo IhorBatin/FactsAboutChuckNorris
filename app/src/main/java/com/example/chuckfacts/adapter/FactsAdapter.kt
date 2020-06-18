@@ -32,12 +32,19 @@ class FactsAdapter : RecyclerView.Adapter<FactsAdapter.FactViewHolder>() {
 
     fun updateFactsList(newList: List<ChuckFactResponse>){
         factsList = newList
-        notifyDataSetChanged()
+        notifyDataSetChanged() // Can use notifyItemRemoved(Int) to have nice animation of removing certain item
     }
 
     inner class FactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val textViewFact: TextView = itemView.tv_fact_text
         val buttonDelete: ImageButton = itemView.ib_delete_fact
         val buttonShare: ImageButton = itemView.ib_share_fact
+
+        fun onClick(){
+            buttonDelete.setOnClickListener {
+
+            }
+        }
+
     }
 }

@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
 
-class AboutFragment : Fragment() {
+class AboutFragment : BaseFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

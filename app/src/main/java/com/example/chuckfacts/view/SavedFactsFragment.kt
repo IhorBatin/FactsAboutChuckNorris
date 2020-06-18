@@ -17,11 +17,12 @@ import timber.log.Timber
 // TODO: Design fact view holder with share and delete buttons
 // TODO: If no saved items, display some default message
 
-class SavedFactsFragment : Fragment() {
+class SavedFactsFragment : BaseFragment() {
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
     private val rvAdapter = FactsAdapter()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -44,7 +45,6 @@ class SavedFactsFragment : Fragment() {
         rv_facts_list.setHasFixedSize(true)
 
         Timber.i("RV: ${rvAdapter.itemCount}")
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

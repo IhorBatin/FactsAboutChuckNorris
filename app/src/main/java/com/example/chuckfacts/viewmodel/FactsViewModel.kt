@@ -1,6 +1,8 @@
 package com.example.chuckfacts.viewmodel
 
 import android.app.Application
+import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +22,6 @@ import timber.log.Timber
 
 class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi, application)
-    private val factsList: MutableList<ChuckFactResponse> = mutableListOf<ChuckFactResponse>()
 
     private val fact: MutableLiveData<ChuckFactResponse> = MutableLiveData<ChuckFactResponse>()
     private val categories: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
@@ -33,13 +34,9 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private fun handleNewResponse(chuckFact: ChuckFactResponse){
         Timber.i("ID: ${chuckFact.id}")
         Timber.i("Fact: ${chuckFact.value}")
-        factsList.add(chuckFact)
         fact.postValue(chuckFact)
     }
 
-    fun getPreviousFact(index: Int){
-        fact.postValue(factsList[index])
-    }
 
     fun getRandomFact(){
         factsRepo.getRandomFacts().enqueue(object : Callback<ChuckFactResponse>{
@@ -123,7 +120,18 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun saveFact(index: Int) = factsRepo.saveFactToDb(factsList[index])
+    fun deleteFact(factId: String){
+        viewModelScope.launch {
+            factsRepo.deleteFactFromDb(factId)
+        }
+    }
+
+    fun saveFact(fact: ChuckFactResponse){
+        viewModelScope.launch {
+            factsRepo.saveFactToDb(fact)
+        }
+    }
+
 
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories

@@ -27,12 +27,18 @@ class FactsRepo(
         factDao = db?.factsDao()
     }
 
-    // Remote calls
+    /**
+     * Remote calls
+     */
     fun getRandomFacts() = factsApiInterface.fetchRandomFacts()
     fun getRandomFacts(category: String) = factsApiInterface.fetchRandomFacts(category)
     fun getAllCategories() = factsApiInterface.fetchAllCategories()
 
-    // Local calls
+
+    /**
+     * Local calls
+     */
+    // Launching Coroutine to get data from DB
     fun getAllSavedFacts() = factDao?.fetchAllFacts()
 
     // Launching Coroutine to save fact in DB
@@ -40,6 +46,15 @@ class FactsRepo(
         launch {
             withContext(Dispatchers.IO){
                 factDao?.insertFactToDb(fact)
+            }
+        }
+    }
+
+    // Launching Coroutine to delete fact from DB
+    fun deleteFactFromDb(factId: String){
+        launch {
+            withContext(Dispatchers.IO){
+                factDao?.deleteFactFromDb(factId)
             }
         }
     }

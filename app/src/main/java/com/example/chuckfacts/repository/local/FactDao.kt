@@ -14,7 +14,7 @@ interface FactDao {
     fun fetchAllFacts(): Flow<List<ChuckFactResponse>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFactToDb(fact: ChuckFactResponse)
+    fun insertFactToDb(fact: ChuckFactResponse)
 
     @Query("DELETE FROM facts_table WHERE id = :factId")
     fun deleteFactFromDb(factId: String)

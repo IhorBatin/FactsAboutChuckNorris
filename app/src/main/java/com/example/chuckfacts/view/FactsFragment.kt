@@ -12,19 +12,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
 import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import kotlinx.android.synthetic.main.bottom_control_bar.*
 import kotlinx.android.synthetic.main.fragment_fact.*
 import kotlinx.coroutines.newFixedThreadPoolContext
 import timber.log.Timber
+import java.util.*
 
 // TODO: Dropdown menu for selecting categories just below toolbar ?
 // TODO: Fix - saving correct fact to the DB
 
-class FactsFragment : Fragment() {
-    private var factsCount: Int = -1
-    private var currentFact: Int = -1
-    private var visibleFact: String = ""
+class FactsFragment : BaseFragment() {
+    private lateinit var visibleFact: ChuckFactResponse
     private var currentCategory: String = "random"
     private var listOfCategories: List<String> = listOf()
 
@@ -54,7 +54,6 @@ class FactsFragment : Fragment() {
         }
 
         button_forward.setOnClickListener { handleOnForwardClick() }
-        button_back.setOnClickListener { handleOnBackClick() }
         button_share.setOnClickListener { handleOnShareClick() }
         button_save.setOnClickListener { handleOnSaveClick() }
     }
@@ -68,7 +67,7 @@ class FactsFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         // Populating category sub-menu with categories received from API
         for (i in listOfCategories){
-            menu[0].subMenu.add(i.toUpperCase())
+            menu[0].subMenu.add(i.toUpperCase(Locale.ROOT))
         }
         super.onPrepareOptionsMenu(menu)
     }
@@ -89,10 +88,10 @@ class FactsFragment : Fragment() {
                 true
             }
             else -> {
-                currentCategory = item.toString().toLowerCase()
+                currentCategory = item.toString().toLowerCase(Locale.ROOT)
                 handleOnForwardClick()
                 Toast.makeText(activity,
-                    "Selected Category: ${currentCategory.toUpperCase()}",
+                    "Selected Category: ${currentCategory.toUpperCase(Locale.ROOT)}",
                     Toast.LENGTH_SHORT).show()
                 super.onOptionsItemSelected(item)
             }
@@ -108,7 +107,7 @@ class FactsFragment : Fragment() {
             Timber.i("Fact ID: ${fact.id}")
             Timber.i("Fact: ${fact.value}")
             Timber.i("=======================")
-            updateFactText(fact.value)
+            updateFactText(fact)
         })
 
         viewModel.getAllCategoriesLiveData().observe(viewLifecycleOwner, Observer {categories ->
@@ -123,64 +122,40 @@ class FactsFragment : Fragment() {
         })
     }
 
+
     private fun handleOnForwardClick(){
         Timber.i("Making Request on category: ${currentCategory}")
-        if(factsCount > currentFact){
-            currentFact++
-            viewModel.getPreviousFact(currentFact)
+        if (currentCategory == "random"){
+            viewModel.getRandomFact()
         }
-        else{
-            factsCount++
-            currentFact++
-            if (currentCategory == "random"){
-                viewModel.getRandomFact()
-            }
-            else if( currentCategory != "random"){
-                viewModel.getRandomFact(currentCategory)
-            }
+        else if(currentCategory != "random"){
+            viewModel.getRandomFact(currentCategory)
         }
     }
 
-    private fun handleOnBackClick() {
-        if(currentFact != 0) {
-            currentFact--
-            viewModel.getPreviousFact(currentFact)
-        }
-    }
 
     private fun handleOnShareClick(){
-        val sendIntent = Intent()
-        val shareIntent: Intent = Intent.createChooser(sendIntent, null)
-
-        sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_TEXT,
-            "$visibleFact \n Provided by Random Chuck Norris Facts App")
-        sendIntent.type = "text/plain"
-        startActivity(shareIntent)
+        Timber.i("Sharing -> ${visibleFact.value}")
+        shareFact(visibleFact)
     }
 
     // TODO: Implement saving to DB functionality
     private fun handleOnSaveClick(){
         Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
-        Timber.i("Saving -> ${currentFact}")
-        if(currentFact != -1){
-            viewModel.saveFact(currentFact)
-        }
-        else{
-            Toast.makeText(activity, "No Facts to save to DB", Toast.LENGTH_SHORT).show()
-        }
+        Timber.i("Saving -> ${visibleFact.value}")
+        viewModel.saveFact(visibleFact)
     }
 
-    private fun updateFactText(fact: String){
+    private fun updateFactText(fact: ChuckFactResponse){
         visibleFact = fact
-        tv_fact.text = visibleFact
+        tv_fact.text = visibleFact.value
     }
 
     private fun navigateToSavedFacts(){
-        view?.findNavController()?.navigate(R.id.action_factsFragment_to_savedFactsFragment)
+        view?.findNavController()?.navigate(action_factsFragment_to_savedFactsFragment)
     }
 
     private fun navigateToAbout(){
-        view?.findNavController()?.navigate(R.id.action_factsFragment_to_aboutFragment)
+        view?.findNavController()?.navigate(action_factsFragment_to_aboutFragment)
     }
 }
