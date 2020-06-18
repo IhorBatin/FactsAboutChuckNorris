@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ChuckFacts</string>
-    <string name="no_facts">Loading Facts…</string>
+    <string name="no_facts">Click -> to load Chuck Facts…</string>
     <string name="string_saved_facts">Saved</string>
     <string name="string_about">About</string>
     <string name="string_random">Random</string>

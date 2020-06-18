@@ -1,5 +1,6 @@
 package com.example.chuckfacts.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -22,6 +23,7 @@ import java.util.*
 
 // TODO: Dropdown menu for selecting categories just below toolbar ?
 // TODO: Fix - saving correct fact to the DB
+
 
 class FactsFragment : BaseFragment() {
     private lateinit var visibleFact: ChuckFactResponse
@@ -46,9 +48,6 @@ class FactsFragment : BaseFragment() {
         setupObservers()
         viewModel.getAllCategories()
 
-        // Loading first fact on launch
-        handleOnForwardClick()
-
         tv_fact.let {
             it.text = resources.getText(R.string.no_facts)
         }
@@ -59,12 +58,9 @@ class FactsFragment : BaseFragment() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.removeItem(mi_random_facts)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.removeItem(mi_random_facts)
+
         // Populating category sub-menu with categories received from API
         for (i in listOfCategories){
             menu[0].subMenu.add(i.toUpperCase(Locale.ROOT))
@@ -158,4 +154,6 @@ class FactsFragment : BaseFragment() {
     private fun navigateToAbout(){
         view?.findNavController()?.navigate(action_factsFragment_to_aboutFragment)
     }
+
+
 }

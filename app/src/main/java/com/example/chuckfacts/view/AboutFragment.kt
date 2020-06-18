@@ -20,10 +20,11 @@ class AboutFragment : BaseFragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         menu.removeItem(R.id.mi_about)
         menu.removeItem(R.id.mi_category)
-        super.onCreateOptionsMenu(menu, inflater)
+
+        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
