@@ -120,9 +120,9 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun deleteFact(factId: String){
+    fun deleteFact(fact: ChuckFactResponse){
         viewModelScope.launch {
-            factsRepo.deleteFactFromDb(factId)
+            factsRepo.deleteFactFromDb(fact.id)
         }
     }
 

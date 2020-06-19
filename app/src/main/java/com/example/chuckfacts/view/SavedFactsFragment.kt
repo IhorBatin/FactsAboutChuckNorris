@@ -13,16 +13,14 @@ import com.example.chuckfacts.util.ChuckFactResponse
 import kotlinx.android.synthetic.main.fragment_saved_facts.*
 import timber.log.Timber
 
-// TODO: Implement RecyclerView to show saved facts
-// TODO: Design fact view holder with share and delete buttons
 // TODO: If no saved items, display some default message
 
-class SavedFactsFragment : BaseFragment() {
+class SavedFactsFragment : Fragment() {
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
-    private var allFactsFromDB: List<ChuckFactResponse> = listOf()
-    private val rvAdapter = FactsAdapter()
 
+    private var allFactsFromDB: List<ChuckFactResponse> = listOf()
+    private var rvAdapter: FactsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,11 +38,10 @@ class SavedFactsFragment : BaseFragment() {
         viewModel.getAllSavedFacts()
 
         // Setting up RecyclerView
+        rvAdapter = FactsAdapter(viewModel)
         rv_facts_list.adapter = rvAdapter
         rv_facts_list.layoutManager = LinearLayoutManager(context)
         rv_facts_list.setHasFixedSize(true)
-
-        Timber.i("RV: ${rvAdapter.itemCount}")
     }
 
 
@@ -76,8 +73,7 @@ class SavedFactsFragment : BaseFragment() {
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
             Timber.i("Saved Facts in DB: ${factsList.size}")
             allFactsFromDB = factsList
-            rvAdapter.updateFactsList(allFactsFromDB)
-            Timber.i("List size ->: ${allFactsFromDB.size}")
+            rvAdapter!!.updateFactsList(allFactsFromDB)
         })
     }
 

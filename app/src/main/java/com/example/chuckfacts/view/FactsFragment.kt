@@ -21,11 +21,8 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import timber.log.Timber
 import java.util.*
 
-// TODO: Dropdown menu for selecting categories just below toolbar ?
-// TODO: Fix - saving correct fact to the DB
 
-
-class FactsFragment : BaseFragment() {
+class FactsFragment : Fragment() {
     private lateinit var visibleFact: ChuckFactResponse
     private var currentCategory: String = "random"
     private var listOfCategories: List<String> = listOf()
@@ -145,6 +142,17 @@ class FactsFragment : BaseFragment() {
     private fun updateFactText(fact: ChuckFactResponse){
         visibleFact = fact
         tv_fact.text = visibleFact.value
+    }
+
+    private fun shareFact(fact: ChuckFactResponse){
+        val sendIntent = Intent()
+        val shareIntent: Intent = Intent.createChooser(sendIntent, null)
+
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+            "${fact.value} \n\n -Provided by Chuck Facts App")
+        sendIntent.type = "text/plain"
+        startActivity(shareIntent)
     }
 
     private fun navigateToSavedFacts(){
