@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -26,14 +27,15 @@ class FactsFragment : Fragment() {
     private lateinit var visibleFact: ChuckFactResponse
     private var currentCategory: String = "random"
     private var listOfCategories: List<String> = listOf()
+    private var factField: TextView? = null
 
     private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.i("onCreateView")
         requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
+
         return inflater.inflate(R.layout.fragment_fact, container, false)
     }
 
@@ -44,9 +46,10 @@ class FactsFragment : Fragment() {
         setHasOptionsMenu(true)
         setupObservers()
         viewModel.getAllCategories()
+        factField= view.findViewById(tv_fact)
 
-        tv_fact.let {
-            it.text = resources.getText(R.string.no_facts)
+        factField?.let {
+            it.text = "..."
         }
 
         button_forward.setOnClickListener { handleOnForwardClick() }
@@ -141,7 +144,9 @@ class FactsFragment : Fragment() {
 
     private fun updateFactText(fact: ChuckFactResponse){
         visibleFact = fact
-        tv_fact.text = visibleFact.value
+        factField?.let {
+            it.text = visibleFact.value
+        }
     }
 
     private fun shareFact(fact: ChuckFactResponse){

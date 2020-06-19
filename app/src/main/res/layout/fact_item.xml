@@ -7,13 +7,14 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:elevation="20dp"
-    android:outlineSpotShadowColor="@color/cyan"
+    android:outlineSpotShadowColor="@color/blanched_almond"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@color/white_smoke">
 
         <TextView
             android:id="@+id/tv_fact_text"
@@ -26,6 +27,7 @@
             android:textSize="20sp"
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
+            android:textColor="@color/black"
             tools:text="This is some ridiculous fact about Chuck Norris and his life!"/>
 
         <ImageButton
