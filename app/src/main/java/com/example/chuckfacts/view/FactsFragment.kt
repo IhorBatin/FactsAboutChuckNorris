@@ -135,7 +135,6 @@ class FactsFragment : Fragment() {
         shareFact(visibleFact)
     }
 
-    // TODO: Implement saving to DB functionality
     private fun handleOnSaveClick(){
         Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
         Timber.i("Saving -> ${visibleFact.value}")

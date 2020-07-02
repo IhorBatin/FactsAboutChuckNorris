@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:elevation="20dp"
+    android:elevation="8dp"
     app:cardCornerRadius="8dp"
     android:background="@drawable/border_shape">
 
@@ -18,17 +18,20 @@
             android:id="@+id/tv_fact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white_smoke"
+            android:gravity="center"
+            android:minHeight="100dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center"
-            android:padding="10dp"
-            android:background="@color/silver"
-            android:minHeight="200dp"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            tools:text="@string/no_facts"
-            />
+            tools:text="@string/no_facts" />
 
 
 

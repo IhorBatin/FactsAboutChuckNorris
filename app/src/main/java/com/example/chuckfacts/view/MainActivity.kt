@@ -16,10 +16,8 @@ import timber.log.Timber
 
 /** TODO GENERAL THINGS TO B DONE:
  *  TODO: Convert all gradle to Kotlin build scripts
- *  TODO: Have Dark/ Light Themes?
  *  TODO: Write Unit & Instrumentation Tests
- *
- *  TODO: Fill info menu about app and API it uses
+ *  TODO: Fill info fragment about app, and API it uses
 */
 
 class MainActivity : AppCompatActivity() {

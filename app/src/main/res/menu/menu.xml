@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <item
         android:id="@+id/mi_category"
@@ -30,6 +31,5 @@
         android:icon="@drawable/ic_info"
         app:showAsAction="always"
         android:title="@string/string_about"/>
-
 
 </menu>

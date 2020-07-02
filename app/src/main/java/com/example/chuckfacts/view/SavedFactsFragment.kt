@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chuckfacts.R
 import com.example.chuckfacts.adapter.FactsAdapter
+import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import kotlinx.android.synthetic.main.fragment_saved_facts.*
 import timber.log.Timber
@@ -71,9 +72,12 @@ class SavedFactsFragment : Fragment() {
 
     private fun setupObservers(){
         viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
-            Timber.i("Saved Facts in DB: ${factsList.size}")
             allFactsFromDB = factsList
             rvAdapter!!.updateFactsList(allFactsFromDB)
+
+            // Setting visibility of message to show if no facts are stored in DB
+            if(factsList.isEmpty()) tv_no_saved_facts.showView(true)
+            else tv_no_saved_facts.showView(false)
         })
     }
 
