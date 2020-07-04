@@ -49,7 +49,7 @@ class FactsFragment : Fragment() {
         factField= view.findViewById(tv_fact)
 
         factField?.let {
-            it.text = "..."
+            it.text = ". . ."
         }
 
         button_forward.setOnClickListener { handleOnForwardClick() }
