@@ -5,8 +5,14 @@
     <string name="string_about">About</string>
     <string name="string_random">Random</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="about_text">About This App…</string>
+    <string name="about_text">
+        Chuck Norris facts are satirical factoids about martial artist and actor Chuck Norris that have become an Internet phenomenon and as a result have become widespread in popular culture. The \'facts\' are normally absurd hyperbolic claims about Norris\' toughness, attitude, virility, sophistication, and masculinity.
+        \n\nChuck Norris facts have spread around the world, leading not only to translated versions, but also spawning localized versions mentioning country-specific advertisements and other Internet phenomena. Allusions are also sometimes made to his use of roundhouse kicks to perform seemingly any task, his large amount of body hair with specific regard to his beard, and his role in the action television series Walker, Texas Ranger.
+    </string>
     <string name="string_category">Category</string>
     <string name="string_cat_random">RANDOM</string>
     <string name="no_saved_facts">No saved facts</string>
+    <string name="legal_disclaimer">
+        <b>Legal disclaimer:</b>\nThis website and its creators are not affiliated with Chuck Norris, any motion picture corporation, any television corporation, parent, or affiliate corporation. All motion pictures, products, and brands mentioned on this website are the respective trademarks and copyrights of their owners. All material on this website is intended for humorous entertainment (satire ) purposes only. The content on this website is not necessarily true and should not be regarded as truth.
+    </string>
 </resources>
