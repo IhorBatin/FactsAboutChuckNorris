@@ -17,7 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
-// TODO: Add handling onFailure and when when we get null objects, inform user
+// TODO: Add handling onFailure and when when we get null objects, inform user, also check if device is online wifi+cellular
 // Can create error chuck obj, and pass it through live data ?
 
 class FactsViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,7 +34,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private fun handleNewResponse(chuckFact: ChuckFactResponse){
         Timber.i("ID: ${chuckFact.id}")
         Timber.i("Fact: ${chuckFact.value}")
-        fact.postValue(chuckFact)
+        fact.value = chuckFact
     }
 
 
@@ -107,7 +107,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
                 catString += "]"
                 Timber.i(catString)
 
-                categories.postValue(categoriesList)
+                categories.value = categoriesList
             }
         })
     }
