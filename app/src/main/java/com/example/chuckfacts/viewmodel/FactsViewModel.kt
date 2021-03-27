@@ -1,8 +1,6 @@
 package com.example.chuckfacts.viewmodel
 
 import android.app.Application
-import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,9 +21,9 @@ import timber.log.Timber
 class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi, application)
 
-    private val fact: MutableLiveData<ChuckFactResponse> = MutableLiveData<ChuckFactResponse>()
-    private val categories: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-    private val savedFacts: MutableLiveData<List<ChuckFactResponse>> = MutableLiveData<List<ChuckFactResponse>>()
+    private val fact: MutableLiveData<ChuckFactResponse> = MutableLiveData()
+    private val categories: MutableLiveData<List<String>> = MutableLiveData()
+    private val savedFacts: MutableLiveData<List<ChuckFactResponse>> = MutableLiveData()
 
     init {
 

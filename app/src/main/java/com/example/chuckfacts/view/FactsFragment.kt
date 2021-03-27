@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +30,7 @@ class FactsFragment : Fragment() {
     private var listOfCategories: List<String> = listOf()
     private var factField: TextView? = null
 
-    private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
+    private val viewModel: FactsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -15,9 +15,8 @@ import com.example.chuckfacts.viewmodel.FactsViewModel
 import timber.log.Timber
 
 /** TODO GENERAL THINGS TO B DONE:
- *  TODO: Convert all gradle to Kotlin build scripts
- *  TODO: Write Unit & Instrumentation Tests
  *  TODO: Fill info fragment about app, and API it uses
+ *  TODO: Add NetworkUtil
 */
 
 class MainActivity : AppCompatActivity() {

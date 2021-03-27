@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.example.chuckfacts.R
 import com.example.chuckfacts.adapter.FactsAdapter
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
+import com.example.chuckfacts.viewmodel.FactsViewModel
 import kotlinx.android.synthetic.main.fragment_saved_facts.*
 import timber.log.Timber
 
@@ -18,7 +20,7 @@ import timber.log.Timber
 
 class SavedFactsFragment : Fragment() {
 
-    private val viewModel by lazy { (requireActivity() as MainActivity).viewModel }
+    private val viewModel: FactsViewModel by viewModels()
 
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
     private var rvAdapter: FactsAdapter? = null
