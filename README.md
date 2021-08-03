@@ -1,3 +1,3 @@
 # FactsAboutChuckNorris
 
-Personal fun project for learnng new API`s and playng with new android features.
+Personal fun project for learning new API`s and trying out new android features.
