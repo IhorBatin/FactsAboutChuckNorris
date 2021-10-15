@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/igor/Documents/MyAndroidApps/FactsAboutChuckNorris/app/src/main/res/drawable/ic_save.xml" value="0.22962962962962963" />
+        <entry key="..\:/Users/igor/Documents/MyAndroidApps/FactsAboutChuckNorris/app/src/main/res/drawable/ic_save_32.xml" value="0.22962962962962963" />
+        <entry key="..\:/Users/igor/Documents/MyAndroidApps/FactsAboutChuckNorris/app/src/main/res/layout/bottom_control_bar.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/igor/Documents/MyAndroidApps/FactsAboutChuckNorris/app/src/main/res/layout/fragment_fact.xml" value="0.25226449275362317" />
         <entry key="..\:/Users/igor/Documents/MyAndroidApps/FactsAboutChuckNorris/app/src/main/res/layout/main_fact_card.xml" value="0.17831813576494426" />
       </map>
