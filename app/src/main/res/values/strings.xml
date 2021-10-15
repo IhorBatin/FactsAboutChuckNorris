@@ -14,7 +14,9 @@
     <string name="string_cat_random">RANDOM</string>
     <string name="no_saved_facts">No saved facts</string>
     <string name="legal_disclaimer">
-        <b>Legal disclaimer:</b>\nThis app and its creator are not affiliated with Chuck Norris, any motion picture corporation, any television corporation, parent, or affiliate corporation. All motion pictures, products, and brands mentioned on this website are the respective trademarks and copyrights of their owners. All material on this app is intended for humorous entertainment (satire ) purposes only. The content on this app is not necessarily true and should not be regarded as truth.
+        <b>Legal disclaimer:</b>\nThis app and its creator are not affiliated with Chuck Norris, any motion picture corporation, any television corporation, parent, or affiliate corporation. All motion pictures, products, and brands mentioned on this app are the respective trademarks and copyrights of their owners. All material on this app is intended for humorous entertainment (satire ) purposes only. The content on this app is not necessarily true and should not be regarded as truth.
     </string>
-    <string name="creator_credits">The app is based on API provided by ... all credit for facts and UI work goes to .... Can find him/her at web_url</string>
-</resources>
+    <string name="creator_credits">
+        The app is based on API provided by <a href="https://api.chucknorris.io">chucknorris.io</a> all credit for facts and UI used goes to Mathias Schilling.
+    </string>
+ </resources>
