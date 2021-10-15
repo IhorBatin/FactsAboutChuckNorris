@@ -16,12 +16,9 @@ import com.example.chuckfacts.viewmodel.FactsViewModel
 import kotlinx.android.synthetic.main.fragment_saved_facts.*
 import timber.log.Timber
 
-// TODO: If no saved items, display some default message
-
 class SavedFactsFragment : Fragment() {
 
     private val viewModel: FactsViewModel by viewModels()
-
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
     private var rvAdapter: FactsAdapter? = null
 
@@ -46,7 +43,6 @@ class SavedFactsFragment : Fragment() {
         rv_facts_list.layoutManager = LinearLayoutManager(context)
         rv_facts_list.setHasFixedSize(true)
     }
-
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.removeItem(R.id.mi_saved_facts)

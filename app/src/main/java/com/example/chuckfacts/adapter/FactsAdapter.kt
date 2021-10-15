@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chuckfacts.R
@@ -20,7 +19,6 @@ class FactsAdapter(
 ) : RecyclerView.Adapter<FactsAdapter.FactViewHolder>() {
 
     private var factsList = listOf<ChuckFactResponse>()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -64,7 +62,7 @@ class FactsAdapter(
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "${factItem.value} \n\n -Provided by Chuck Facts App")
+                    "${factItem.value} \n\n -Provided by ChuckFacts App")
                 sendIntent.type = "text/plain"
                 startActivity(itemView.context, shareIntent, null)
             }

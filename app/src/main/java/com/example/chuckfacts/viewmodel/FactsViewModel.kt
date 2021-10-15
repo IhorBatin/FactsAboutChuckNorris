@@ -15,9 +15,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
-// TODO: Add handling onFailure and when when we get null objects, inform user, also check if device is online wifi+cellular
-// Can create error chuck obj, and pass it through live data ?
-
 class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private val factsRepo: FactsRepo = FactsRepo(FactsApiService.factsApi, application)
 
@@ -25,16 +22,16 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private val categories: MutableLiveData<List<String>> = MutableLiveData()
     private val savedFacts: MutableLiveData<List<ChuckFactResponse>> = MutableLiveData()
 
-    init {
-
-    }
-
     private fun handleNewResponse(chuckFact: ChuckFactResponse){
         Timber.i("ID: ${chuckFact.id}")
         Timber.i("Fact: ${chuckFact.value}")
         fact.value = chuckFact
     }
 
+    init {
+        getRandomFact()
+        getAllCategories()
+    }
 
     fun getRandomFact(){
         factsRepo.getRandomFacts().enqueue(object : Callback<ChuckFactResponse>{
@@ -129,7 +126,6 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
             factsRepo.saveFactToDb(fact)
         }
     }
-
 
     fun getFactsLiveData(): LiveData<ChuckFactResponse> = fact
     fun getAllCategoriesLiveData(): LiveData<List<String>> = categories
