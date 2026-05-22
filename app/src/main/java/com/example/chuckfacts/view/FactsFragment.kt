@@ -17,14 +17,15 @@ import com.example.chuckfacts.R
 import com.example.chuckfacts.R.id.*
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import kotlinx.android.synthetic.main.bottom_control_bar.*
-import kotlinx.android.synthetic.main.fragment_fact.*
-import kotlinx.coroutines.newFixedThreadPoolContext
+import com.example.chuckfacts.databinding.FragmentFactBinding
 import timber.log.Timber
 import java.util.*
 
 
 class FactsFragment : Fragment() {
+    private var _binding: FragmentFactBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var visibleFact: ChuckFactResponse
     private var currentCategory: String = "random"
     private var listOfCategories: List<String> = listOf()
@@ -33,11 +34,12 @@ class FactsFragment : Fragment() {
     private val viewModel: FactsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Timber.i("onCreateView")
         requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
 
-        return inflater.inflate(R.layout.fragment_fact, container, false)
+        _binding = FragmentFactBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,15 +49,22 @@ class FactsFragment : Fragment() {
         setHasOptionsMenu(true)
         setupObservers()
         viewModel.getAllCategories()
-        factField= view.findViewById(tv_fact)
+        factField = view.findViewById(tv_fact)
 
         factField?.let {
             it.text = ". . ."
         }
 
-        button_forward.setOnClickListener { handleOnForwardClick() }
-        button_share.setOnClickListener { handleOnShareClick() }
-        button_save.setOnClickListener { handleOnSaveClick() }
+        binding.controlBar.buttonForward.setOnClickListener { handleOnForwardClick() }
+        binding.controlBar.buttonShare.setOnClickListener { handleOnShareClick() }
+        binding.controlBar.buttonSave.setOnClickListener { handleOnSaveClick() }
+        binding.controlBar.buttonShare.isEnabled = false
+        binding.controlBar.buttonSave.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
@@ -64,7 +73,7 @@ class FactsFragment : Fragment() {
 
         // Populating category sub-menu with categories received from API
         for (i in listOfCategories){
-            menu[0].subMenu.add(i.toUpperCase(Locale.ROOT))
+            menu[0].subMenu?.add(i.uppercase(Locale.ROOT))
         }
         super.onPrepareOptionsMenu(menu)
     }
@@ -85,10 +94,10 @@ class FactsFragment : Fragment() {
                 true
             }
             else -> {
-                currentCategory = item.toString().toLowerCase(Locale.ROOT)
+                currentCategory = item.toString().lowercase(Locale.ROOT)
                 handleOnForwardClick()
                 Toast.makeText(activity,
-                    "Selected Category: ${currentCategory.toUpperCase(Locale.ROOT)}",
+                    "Selected Category: ${currentCategory.uppercase(Locale.ROOT)}",
                     Toast.LENGTH_SHORT).show()
                 super.onOptionsItemSelected(item)
             }
@@ -132,14 +141,18 @@ class FactsFragment : Fragment() {
 
 
     private fun handleOnShareClick(){
-        Timber.i("Sharing -> ${visibleFact.value}")
-        shareFact(visibleFact)
+        if (this::visibleFact.isInitialized) {
+            Timber.i("Sharing -> ${visibleFact.value}")
+            shareFact(visibleFact)
+        }
     }
 
     private fun handleOnSaveClick(){
-        Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
-        Timber.i("Saving -> ${visibleFact.value}")
-        viewModel.saveFact(visibleFact)
+        if (this::visibleFact.isInitialized) {
+            Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
+            Timber.i("Saving -> ${visibleFact.value}")
+            viewModel.saveFact(visibleFact)
+        }
     }
 
     private fun updateFactText(fact: ChuckFactResponse){
@@ -147,6 +160,8 @@ class FactsFragment : Fragment() {
         factField?.let {
             it.text = visibleFact.value
         }
+        binding.controlBar.buttonShare.isEnabled = true
+        binding.controlBar.buttonSave.isEnabled = true
     }
 
     private fun shareFact(fact: ChuckFactResponse){

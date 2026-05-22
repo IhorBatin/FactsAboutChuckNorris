@@ -13,7 +13,7 @@ import com.example.chuckfacts.adapter.FactsAdapter
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import kotlinx.android.synthetic.main.fragment_saved_facts.*
+import com.example.chuckfacts.databinding.FragmentSavedFactsBinding
 import timber.log.Timber
 
 // TODO: If no saved items, display some default message
@@ -25,11 +25,15 @@ class SavedFactsFragment : Fragment() {
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
     private var rvAdapter: FactsAdapter? = null
 
+    private var _binding: FragmentSavedFactsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         Timber.i("onCreateView")
-        return inflater.inflate(R.layout.fragment_saved_facts, container, false)
+        _binding = FragmentSavedFactsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,9 +46,14 @@ class SavedFactsFragment : Fragment() {
 
         // Setting up RecyclerView
         rvAdapter = FactsAdapter(viewModel)
-        rv_facts_list.adapter = rvAdapter
-        rv_facts_list.layoutManager = LinearLayoutManager(context)
-        rv_facts_list.setHasFixedSize(true)
+        binding.rvFactsList.adapter = rvAdapter
+        binding.rvFactsList.layoutManager = LinearLayoutManager(context)
+        binding.rvFactsList.setHasFixedSize(true)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
@@ -78,8 +87,8 @@ class SavedFactsFragment : Fragment() {
             rvAdapter!!.updateFactsList(allFactsFromDB)
 
             // Setting visibility of message to show if no facts are stored in DB
-            if(factsList.isEmpty()) tv_no_saved_facts.showView(true)
-            else tv_no_saved_facts.showView(false)
+            if(factsList.isEmpty()) binding.tvNoSavedFacts.showView(true)
+            else binding.tvNoSavedFacts.showView(false)
         })
     }
 
