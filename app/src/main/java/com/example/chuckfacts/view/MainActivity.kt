@@ -1,16 +1,12 @@
 package com.example.chuckfacts.view
 
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.chuckfacts.R
-import com.example.chuckfacts.repository.local.FactsDb
 import com.example.chuckfacts.viewmodel.FactsViewModel
 import timber.log.Timber
 

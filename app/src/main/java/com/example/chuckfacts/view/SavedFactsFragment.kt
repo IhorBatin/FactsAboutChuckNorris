@@ -1,7 +1,11 @@
 package com.example.chuckfacts.view
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -10,13 +14,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chuckfacts.R
 import com.example.chuckfacts.adapter.FactsAdapter
+import com.example.chuckfacts.databinding.FragmentSavedFactsBinding
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import com.example.chuckfacts.databinding.FragmentSavedFactsBinding
 import timber.log.Timber
-
-// TODO: If no saved items, display some default message
 
 class SavedFactsFragment : Fragment() {
 
@@ -41,21 +43,21 @@ class SavedFactsFragment : Fragment() {
         Timber.i("onViewCreated")
 
         setHasOptionsMenu(true)
-        setupObservers()
-        viewModel.getAllSavedFacts()
 
         // Setting up RecyclerView
         rvAdapter = FactsAdapter(viewModel)
         binding.rvFactsList.adapter = rvAdapter
         binding.rvFactsList.layoutManager = LinearLayoutManager(context)
         binding.rvFactsList.setHasFixedSize(true)
+
+        setupObservers()
+        viewModel.getAllSavedFacts()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.removeItem(R.id.mi_saved_facts)

@@ -22,11 +22,7 @@
 
             <include
                 android:id="@+id/cv_fact_card"
-                layout="@layout/main_fact_card"
-                app:layout_constraintBottom_toTopOf="@id/control_bar"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                layout="@layout/main_fact_card" />
 
         </ScrollView>
 

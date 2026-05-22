@@ -48,6 +48,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation libs.androidx.appcompat
+    implementation libs.material
     implementation libs.androidx.core.ktx
     implementation libs.androidx.constraintlayout
     testImplementation libs.junit
