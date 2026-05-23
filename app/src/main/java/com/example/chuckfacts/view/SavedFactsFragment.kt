@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -61,38 +60,39 @@ class SavedFactsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId){
+        return when (item.itemId) {
             R.id.mi_random_facts -> {
                 navigateToRandomFacts()
                 true
             }
+
             R.id.mi_about -> {
                 navigateToAbout()
-                Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
                 true
             }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }
         }
     }
 
-    private fun setupObservers(){
-        viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer {factsList ->
+    private fun setupObservers() {
+        viewModel.getAllSavedFactsLiveData().observe(viewLifecycleOwner, Observer { factsList ->
             allFactsFromDB = factsList
             rvAdapter!!.updateFactsList(allFactsFromDB)
 
             // Setting visibility of message to show if no facts are stored in DB
-            if(factsList.isEmpty()) binding.tvNoSavedFacts.showView(true)
+            if (factsList.isEmpty()) binding.tvNoSavedFacts.showView(true)
             else binding.tvNoSavedFacts.showView(false)
         })
     }
 
-    private fun navigateToRandomFacts(){
+    private fun navigateToRandomFacts() {
         view?.findNavController()?.navigate(R.id.action_savedFactsFragment_to_factsFragment)
     }
 
-    private fun navigateToAbout(){
+    private fun navigateToAbout() {
         view?.findNavController()?.navigate(R.id.action_savedFactsFragment_to_aboutFragment)
     }
 }

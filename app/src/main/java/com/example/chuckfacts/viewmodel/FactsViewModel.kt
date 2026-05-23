@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.chuckfacts.repository.FactsApiService
 import com.example.chuckfacts.repository.FactsRepo
 import com.example.chuckfacts.util.ChuckFactResponse
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,7 +21,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
     private val categories: MutableLiveData<List<String>> = MutableLiveData()
     private val savedFacts: MutableLiveData<List<ChuckFactResponse>> = MutableLiveData()
 
-    private fun handleNewResponse(chuckFact: ChuckFactResponse){
+    private fun handleNewResponse(chuckFact: ChuckFactResponse) {
         Timber.i("ID: ${chuckFact.id}")
         Timber.i("Fact: ${chuckFact.value}")
         fact.value = chuckFact
@@ -33,18 +32,19 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         getAllCategories()
     }
 
-    fun getRandomFact(){
-        factsRepo.getRandomFacts().enqueue(object : Callback<ChuckFactResponse>{
+    fun getRandomFact() {
+        factsRepo.getRandomFacts().enqueue(object : Callback<ChuckFactResponse> {
             override fun onFailure(call: Call<ChuckFactResponse>, t: Throwable) {
                 Timber.e("Random Facts onFailure: ${t.message}")
             }
 
             override fun onResponse(
                 call: Call<ChuckFactResponse>,
-                response: Response<ChuckFactResponse>) {
+                response: Response<ChuckFactResponse>
+            ) {
                 Timber.i("Random Facts onResponse... \n")
 
-                if(response.body() == null){
+                if (response.body() == null) {
                     Timber.i("Response is null")
                     return
                 }
@@ -54,9 +54,9 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun getRandomFact(specificCategory: String){
+    fun getRandomFact(specificCategory: String) {
         factsRepo.getRandomFacts(specificCategory)
-            .enqueue(object : Callback<ChuckFactResponse>{
+            .enqueue(object : Callback<ChuckFactResponse> {
                 override fun onFailure(call: Call<ChuckFactResponse>, t: Throwable) {
                     Timber.i("Fact fom Category onFailure: ${t.message}")
                 }
@@ -67,7 +67,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
                 ) {
                     Timber.i("Fact fom Category onResponse...")
 
-                    if(response.body() == null){
+                    if (response.body() == null) {
                         Timber.i("Response is null")
                         return
                     }
@@ -77,8 +77,8 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
             })
     }
 
-    fun getAllCategories(){
-        factsRepo.getAllCategories().enqueue(object : Callback<List<String>>{
+    fun getAllCategories() {
+        factsRepo.getAllCategories().enqueue(object : Callback<List<String>> {
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
                 Timber.e("Categories onFailure: ${t.message}")
             }
@@ -86,7 +86,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
             override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
                 Timber.i("Categories onResponse...")
 
-                if(response.body() == null){
+                if (response.body() == null) {
                     Timber.i("Response is null")
                     return
                 }
@@ -95,8 +95,8 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.i("We got ${categoriesList.size} Chuck categories:")
 
                 // Printing all categories to the console
-                var catString: String = "["
-                for(category in categoriesList) {
+                var catString = "["
+                for (category in categoriesList) {
                     catString += "$category, "
                 }
                 catString += "]"
@@ -107,7 +107,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun getAllSavedFacts(){
+    fun getAllSavedFacts() {
         viewModelScope.launch {
             factsRepo.getAllSavedFacts()?.collect {
                 savedFacts.postValue(it)
@@ -115,13 +115,13 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun deleteFact(fact: ChuckFactResponse){
+    fun deleteFact(fact: ChuckFactResponse) {
         viewModelScope.launch {
             factsRepo.deleteFactFromDb(fact.id)
         }
     }
 
-    fun saveFact(fact: ChuckFactResponse){
+    fun saveFact(fact: ChuckFactResponse) {
         viewModelScope.launch {
             factsRepo.saveFactToDb(fact)
         }

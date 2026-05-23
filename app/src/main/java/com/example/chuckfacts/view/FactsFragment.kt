@@ -2,18 +2,28 @@ package com.example.chuckfacts.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
-import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.R.id.action_factsFragment_to_aboutFragment
+import com.example.chuckfacts.R.id.action_factsFragment_to_savedFactsFragment
+import com.example.chuckfacts.R.id.mi_about
+import com.example.chuckfacts.R.id.mi_category
+import com.example.chuckfacts.R.id.mi_random_facts
+import com.example.chuckfacts.R.id.mi_saved_facts
+import com.example.chuckfacts.R.id.pb_loading
+import com.example.chuckfacts.R.id.tv_fact
 import com.example.chuckfacts.databinding.FragmentFactBinding
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
@@ -35,7 +45,8 @@ class FactsFragment : Fragment() {
     private val viewModel: FactsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
 
         _binding = FragmentFactBinding.inflate(inflater, container, false)
@@ -66,38 +77,39 @@ class FactsFragment : Fragment() {
         menu.removeItem(mi_random_facts)
 
         // Populating category sub-menu with categories received from API
-        for (category in listOfCategories){
+        for (category in listOfCategories) {
             menu[0].subMenu?.add(category.uppercase())
         }
         super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId){
+        return when (item.itemId) {
             mi_saved_facts -> {
                 navigateToSavedFacts()
                 true
             }
+
             mi_about -> {
                 navigateToAbout()
-                showToast(R.string.string_about)
                 true
             }
+
             mi_category -> {
                 //
                 true
             }
+
             else -> {
                 currentCategory = item.toString().lowercase()
                 handleOnForwardClick()
-                showToast("Selected Category: ${currentCategory.uppercase(Locale.ROOT)}")
                 super.onOptionsItemSelected(item)
             }
         }
     }
 
-    private fun setupObservers(){
-        viewModel.getFactsLiveData().observe(viewLifecycleOwner, Observer {fact ->
+    private fun setupObservers() {
+        viewModel.getFactsLiveData().observe(viewLifecycleOwner, Observer { fact ->
             Timber.i("LiveData RandomFact updating...")
             Timber.i("Fact Category: ${fact.categories}")
             Timber.i("Fact ID: ${fact.id}")
@@ -106,7 +118,7 @@ class FactsFragment : Fragment() {
             updateFactText(fact)
         })
 
-        viewModel.getAllCategoriesLiveData().observe(viewLifecycleOwner, Observer {categories ->
+        viewModel.getAllCategoriesLiveData().observe(viewLifecycleOwner, Observer { categories ->
             Timber.i("LiveData Categories updating...")
             Timber.i("Num of categories: ${categories.size}")
             listOfCategories = categories
@@ -118,30 +130,29 @@ class FactsFragment : Fragment() {
         })
     }
 
-    private fun handleOnForwardClick(){
+    private fun handleOnForwardClick() {
         Timber.i("Making Request on category: $currentCategory")
-        if (currentCategory == "random"){
+        if (currentCategory == "random") {
             viewModel.getRandomFact()
-        }
-        else if(currentCategory != "random"){
+        } else if (currentCategory != "random") {
             viewModel.getRandomFact(currentCategory)
         }
     }
 
-    private fun handleOnShareClick(){
+    private fun handleOnShareClick() {
         if (this::visibleFact.isInitialized) {
             Timber.i("Sharing -> ${visibleFact.value}")
             shareFact(visibleFact)
         }
     }
 
-    private fun handleOnSaveClick(){
+    private fun handleOnSaveClick() {
         showToast(R.string.saving)
         Timber.i("Saving -> ${visibleFact.value}")
         viewModel.saveFact(visibleFact)
     }
 
-    private fun updateFactText(fact: ChuckFactResponse){
+    private fun updateFactText(fact: ChuckFactResponse) {
         visibleFact = fact
         progressBar.showView(false)
 
@@ -153,13 +164,15 @@ class FactsFragment : Fragment() {
         binding.controlBar.buttonSave.isEnabled = true
     }
 
-    private fun shareFact(fact: ChuckFactResponse){
+    private fun shareFact(fact: ChuckFactResponse) {
         val sendIntent = Intent()
         val shareIntent: Intent = Intent.createChooser(sendIntent, null)
 
         sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_TEXT,
-            "${fact.value} \n\n -Provided by Chuck Facts App")
+        sendIntent.putExtra(
+            Intent.EXTRA_TEXT,
+            "${fact.value} \n\n -Provided by Chuck Facts App"
+        )
         sendIntent.type = "text/plain"
         startActivity(shareIntent)
     }
@@ -170,17 +183,11 @@ class FactsFragment : Fragment() {
         toast?.show()
     }
 
-    private fun showToast(msg: String) {
-        if (toast != null) toast?.cancel()
-        toast = Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
-        toast?.show()
-    }
-
-    private fun navigateToSavedFacts(){
+    private fun navigateToSavedFacts() {
         view?.findNavController()?.navigate(action_factsFragment_to_savedFactsFragment)
     }
 
-    private fun navigateToAbout(){
+    private fun navigateToAbout() {
         view?.findNavController()?.navigate(action_factsFragment_to_aboutFragment)
     }
 }
