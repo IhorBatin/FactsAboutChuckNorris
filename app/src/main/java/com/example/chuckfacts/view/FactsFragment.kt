@@ -14,10 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
 import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.databinding.FragmentFactBinding
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import kotlinx.android.synthetic.main.bottom_control_bar.*
 import timber.log.Timber
 import java.util.Locale
 
@@ -29,6 +29,8 @@ class FactsFragment : Fragment() {
     private lateinit var factField: TextView
     private lateinit var progressBar: ProgressBar
     private var toast: Toast? = null
+    private var _binding: FragmentFactBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: FactsViewModel by viewModels()
 
@@ -88,7 +90,7 @@ class FactsFragment : Fragment() {
             else -> {
                 currentCategory = item.toString().lowercase()
                 handleOnForwardClick()
-                showToast("Selected Category: ${currentCategory.toUpperCase(Locale.ROOT)}")
+                showToast("Selected Category: ${currentCategory.uppercase(Locale.ROOT)}")
                 super.onOptionsItemSelected(item)
             }
         }
