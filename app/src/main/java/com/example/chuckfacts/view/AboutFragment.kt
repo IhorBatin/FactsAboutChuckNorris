@@ -33,10 +33,12 @@ class AboutFragment : Fragment() {
                 view?.findNavController()?.navigate(R.id.action_aboutFragment_to_savedFactsFragment)
                 true
             }
+
             R.id.mi_random_facts -> {
                 view?.findNavController()?.navigate(R.id.action_aboutFragment_to_factsFragment)
                 true
             }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }
