@@ -2,16 +2,14 @@ package com.example.chuckfacts.adapter
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chuckfacts.R
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import kotlinx.android.synthetic.main.fact_item.view.*
+import com.example.chuckfacts.databinding.FactItemBinding
 import timber.log.Timber
 
 class FactsAdapter(
@@ -21,17 +19,12 @@ class FactsAdapter(
     private var factsList = listOf<ChuckFactResponse>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.fact_item,
-            parent,
-            false)
+        val binding = FactItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return FactViewHolder(itemView)
+        return FactViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: FactViewHolder, position: Int) {
-        val currentFact = factsList[position]
-        holder.textViewFact.text = currentFact.value
         holder.bind(factsList[position])
     }
 
@@ -43,18 +36,16 @@ class FactsAdapter(
         notifyDataSetChanged()
     }
 
-    inner class FactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val textViewFact: TextView = itemView.tv_fact_text
-        private val buttonDelete: ImageButton = itemView.ib_delete_fact
-        private val buttonShare: ImageButton = itemView.ib_share_fact
-
+    inner class FactViewHolder(private val binding: FactItemBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(factItem: ChuckFactResponse){
-            buttonDelete.setOnClickListener {
+            binding.tvFactText.text = factItem.value
+
+            binding.ibDeleteFact.setOnClickListener {
                 Timber.i("Clicked DEL on ${factItem.value}")
                 viewModel.deleteFact(factItem)
             }
 
-            buttonShare.setOnClickListener {
+            binding.ibShareFact.setOnClickListener {
                 Timber.i("Clicked SHARE on ${factItem.value}")
 
                 val sendIntent = Intent()
@@ -64,7 +55,7 @@ class FactsAdapter(
                     Intent.EXTRA_TEXT,
                     "${factItem.value} \n\n -Provided by ChuckFacts App")
                 sendIntent.type = "text/plain"
-                startActivity(itemView.context, shareIntent, null)
+                startActivity(binding.root.context, shareIntent, null)
             }
         }
     }

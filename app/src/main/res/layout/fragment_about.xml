@@ -8,8 +8,7 @@
     android:layout_height="match_parent"
     android:elevation="4dp"
     android:layout_margin="10dp"
-    app:cardCornerRadius="8dp"
-    tools:context=".view.AboutFragment">
+    app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -24,18 +23,18 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/iv_chuck_logo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxHeight="30dp"
-                        android:background="@drawable/chuck_norris_logo"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/chuck_norris_logo"
                         android:layout_margin="16dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <TextView
                         android:id="@+id/tv_creator_credits"
@@ -75,8 +74,8 @@
                         android:text="@string/legal_disclaimer"
                         android:textSize="16sp"
                         app:layout_constraintTop_toBottomOf="@id/tv_about_app"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

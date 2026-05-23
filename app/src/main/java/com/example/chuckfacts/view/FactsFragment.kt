@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,12 +14,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
 import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.databinding.FragmentFactBinding
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
-import kotlinx.android.synthetic.main.bottom_control_bar.*
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 class FactsFragment : Fragment() {
 
@@ -28,6 +29,8 @@ class FactsFragment : Fragment() {
     private lateinit var factField: TextView
     private lateinit var progressBar: ProgressBar
     private var toast: Toast? = null
+    private var _binding: FragmentFactBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: FactsViewModel by viewModels()
 
@@ -35,7 +38,8 @@ class FactsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
 
-        return inflater.inflate(R.layout.fragment_fact, container, false)
+        _binding = FragmentFactBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,17 +50,24 @@ class FactsFragment : Fragment() {
         factField = view.findViewById(tv_fact)
         progressBar = view.findViewById(pb_loading)
 
-        button_forward.setOnClickListener { handleOnForwardClick() }
-        button_share.setOnClickListener { handleOnShareClick() }
-        button_save.setOnClickListener { handleOnSaveClick() }
+        binding.controlBar.buttonForward.setOnClickListener { handleOnForwardClick() }
+        binding.controlBar.buttonShare.setOnClickListener { handleOnShareClick() }
+        binding.controlBar.buttonSave.setOnClickListener { handleOnSaveClick() }
+        binding.controlBar.buttonShare.isEnabled = false
+        binding.controlBar.buttonSave.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.removeItem(mi_random_facts)
 
         // Populating category sub-menu with categories received from API
-        for (i in listOfCategories){
-            menu[0].subMenu.add(i.toUpperCase(Locale.ROOT))
+        for (category in listOfCategories){
+            menu[0].subMenu?.add(category.uppercase())
         }
         super.onPrepareOptionsMenu(menu)
     }
@@ -77,9 +88,9 @@ class FactsFragment : Fragment() {
                 true
             }
             else -> {
-                currentCategory = item.toString().toLowerCase(Locale.ROOT)
+                currentCategory = item.toString().lowercase()
                 handleOnForwardClick()
-                showToast("Selected Category: ${currentCategory.toUpperCase(Locale.ROOT)}")
+                showToast("Selected Category: ${currentCategory.uppercase(Locale.ROOT)}")
                 super.onOptionsItemSelected(item)
             }
         }
@@ -118,8 +129,10 @@ class FactsFragment : Fragment() {
     }
 
     private fun handleOnShareClick(){
-        Timber.i("Sharing -> ${visibleFact.value}")
-        shareFact(visibleFact)
+        if (this::visibleFact.isInitialized) {
+            Timber.i("Sharing -> ${visibleFact.value}")
+            shareFact(visibleFact)
+        }
     }
 
     private fun handleOnSaveClick(){
@@ -136,6 +149,8 @@ class FactsFragment : Fragment() {
             it.text = visibleFact.value
             it.showView(true)
         }
+        binding.controlBar.buttonShare.isEnabled = true
+        binding.controlBar.buttonSave.isEnabled = true
     }
 
     private fun shareFact(fact: ChuckFactResponse){
