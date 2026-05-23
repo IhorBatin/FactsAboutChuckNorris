@@ -23,7 +23,6 @@ import timber.log.Timber
 class SavedFactsFragment : Fragment() {
 
     private val viewModel: FactsViewModel by viewModels()
-
     private var allFactsFromDB: List<ChuckFactResponse> = listOf()
     private var rvAdapter: FactsAdapter? = null
 
@@ -52,11 +51,6 @@ class SavedFactsFragment : Fragment() {
 
         setupObservers()
         viewModel.getAllSavedFacts()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

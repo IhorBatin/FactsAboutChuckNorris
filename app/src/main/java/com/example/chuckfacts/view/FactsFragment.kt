@@ -2,11 +2,8 @@ package com.example.chuckfacts.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,34 +12,29 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.example.chuckfacts.R.id.action_factsFragment_to_aboutFragment
-import com.example.chuckfacts.R.id.action_factsFragment_to_savedFactsFragment
-import com.example.chuckfacts.R.id.mi_about
-import com.example.chuckfacts.R.id.mi_category
-import com.example.chuckfacts.R.id.mi_random_facts
-import com.example.chuckfacts.R.id.mi_saved_facts
-import com.example.chuckfacts.R.id.tv_fact
-import com.example.chuckfacts.databinding.FragmentFactBinding
+import com.example.chuckfacts.R
+import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
 import com.example.chuckfacts.viewmodel.FactsViewModel
+import kotlinx.android.synthetic.main.bottom_control_bar.*
 import timber.log.Timber
 import java.util.Locale
 
-
 class FactsFragment : Fragment() {
-    private var _binding: FragmentFactBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var visibleFact: ChuckFactResponse
     private var currentCategory: String = "random"
     private var listOfCategories: List<String> = listOf()
-    private var factField: TextView? = null
+    private lateinit var factField: TextView
+    private lateinit var progressBar: ProgressBar
+    private var toast: Toast? = null
 
     private val viewModel: FactsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Timber.i("onCreateView")
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
 
         _binding = FragmentFactBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,17 +42,11 @@ class FactsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.i("onViewCreated")
-        (requireActivity() as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(true)
-
         setHasOptionsMenu(true)
         setupObservers()
-        viewModel.getAllCategories()
-        factField = view.findViewById(tv_fact)
 
-        factField?.let {
-            it.text = ". . ."
-        }
+        factField = view.findViewById(tv_fact)
+        progressBar = view.findViewById(pb_loading)
 
         binding.controlBar.buttonForward.setOnClickListener { handleOnForwardClick() }
         binding.controlBar.buttonShare.setOnClickListener { handleOnShareClick() }
@@ -73,7 +59,6 @@ class FactsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.removeItem(mi_random_facts)
@@ -93,7 +78,7 @@ class FactsFragment : Fragment() {
             }
             mi_about -> {
                 navigateToAbout()
-                Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show()
+                showToast(R.string.string_about)
                 true
             }
             mi_category -> {
@@ -103,17 +88,13 @@ class FactsFragment : Fragment() {
             else -> {
                 currentCategory = item.toString().lowercase()
                 handleOnForwardClick()
-                Toast.makeText(activity,
-                    "Selected Category: ${currentCategory.uppercase(Locale.ROOT)}",
-                    Toast.LENGTH_SHORT).show()
+                showToast("Selected Category: ${currentCategory.toUpperCase(Locale.ROOT)}")
                 super.onOptionsItemSelected(item)
             }
         }
     }
 
     private fun setupObservers(){
-        // When checking updates on live data make sure app is in the foreground,
-        // otherwise it will not update values
         viewModel.getFactsLiveData().observe(viewLifecycleOwner, Observer {fact ->
             Timber.i("LiveData RandomFact updating...")
             Timber.i("Fact Category: ${fact.categories}")
@@ -135,9 +116,8 @@ class FactsFragment : Fragment() {
         })
     }
 
-
     private fun handleOnForwardClick(){
-        Timber.i("Making Request on category: ${currentCategory}")
+        Timber.i("Making Request on category: $currentCategory")
         if (currentCategory == "random"){
             viewModel.getRandomFact()
         }
@@ -145,7 +125,6 @@ class FactsFragment : Fragment() {
             viewModel.getRandomFact(currentCategory)
         }
     }
-
 
     private fun handleOnShareClick(){
         if (this::visibleFact.isInitialized) {
@@ -155,17 +134,18 @@ class FactsFragment : Fragment() {
     }
 
     private fun handleOnSaveClick(){
-        if (this::visibleFact.isInitialized) {
-            Toast.makeText(activity, "Saving...", Toast.LENGTH_SHORT).show()
-            Timber.i("Saving -> ${visibleFact.value}")
-            viewModel.saveFact(visibleFact)
-        }
+        showToast(R.string.saving)
+        Timber.i("Saving -> ${visibleFact.value}")
+        viewModel.saveFact(visibleFact)
     }
 
     private fun updateFactText(fact: ChuckFactResponse){
         visibleFact = fact
-        factField?.let {
+        progressBar.showView(false)
+
+        factField.let {
             it.text = visibleFact.value
+            it.showView(true)
         }
         binding.controlBar.buttonShare.isEnabled = true
         binding.controlBar.buttonSave.isEnabled = true
@@ -180,6 +160,18 @@ class FactsFragment : Fragment() {
             "${fact.value} \n\n -Provided by Chuck Facts App")
         sendIntent.type = "text/plain"
         startActivity(shareIntent)
+    }
+
+    private fun showToast(msg: Int) {
+        if (toast != null) toast?.cancel()
+        toast = Toast.makeText(requireContext(), getString(msg), Toast.LENGTH_SHORT)
+        toast?.show()
+    }
+
+    private fun showToast(msg: String) {
+        if (toast != null) toast?.cancel()
+        toast = Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
+        toast?.show()
     }
 
     private fun navigateToSavedFacts(){

@@ -3,6 +3,8 @@ package com.example.chuckfacts.adapter
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chuckfacts.util.ChuckFactResponse
@@ -15,7 +17,6 @@ class FactsAdapter(
 ) : RecyclerView.Adapter<FactsAdapter.FactViewHolder>() {
 
     private var factsList = listOf<ChuckFactResponse>()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactViewHolder {
         val binding = FactItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -52,7 +53,7 @@ class FactsAdapter(
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "${factItem.value} \n\n -Provided by Chuck Facts App")
+                    "${factItem.value} \n\n -Provided by ChuckFacts App")
                 sendIntent.type = "text/plain"
                 startActivity(binding.root.context, shareIntent, null)
             }
