@@ -2,18 +2,28 @@ package com.example.chuckfacts.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.chuckfacts.R
-import com.example.chuckfacts.R.id.*
+import com.example.chuckfacts.R.id.action_factsFragment_to_aboutFragment
+import com.example.chuckfacts.R.id.action_factsFragment_to_savedFactsFragment
+import com.example.chuckfacts.R.id.mi_about
+import com.example.chuckfacts.R.id.mi_category
+import com.example.chuckfacts.R.id.mi_random_facts
+import com.example.chuckfacts.R.id.mi_saved_facts
+import com.example.chuckfacts.R.id.pb_loading
+import com.example.chuckfacts.R.id.tv_fact
 import com.example.chuckfacts.databinding.FragmentFactBinding
 import com.example.chuckfacts.ext.showView
 import com.example.chuckfacts.util.ChuckFactResponse
@@ -35,7 +45,7 @@ class FactsFragment : Fragment() {
     private val viewModel: FactsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         requireActivity().actionBar?.setDisplayShowTitleEnabled(true)
 
         _binding = FragmentFactBinding.inflate(inflater, container, false)

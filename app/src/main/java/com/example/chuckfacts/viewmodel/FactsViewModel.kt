@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.chuckfacts.repository.FactsApiService
 import com.example.chuckfacts.repository.FactsRepo
 import com.example.chuckfacts.util.ChuckFactResponse
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,7 +94,7 @@ class FactsViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.i("We got ${categoriesList.size} Chuck categories:")
 
                 // Printing all categories to the console
-                var catString: String = "["
+                var catString = "["
                 for(category in categoriesList) {
                     catString += "$category, "
                 }
